@@ -34,8 +34,8 @@
 							<h1 class="major">Try A GN</h1>
 							<!-- <span class="image fit"><img src="images/pic04.jpg" alt="" /></span> -->
 							<ul class="actions">
-								<li><button id="startTrial" class="button large" hx-get="/api/getGoodNightMessage" hx-trigger="click" hx-target="#gnResult">Start Trial</li>
-								<li><img class="htmx-indicator" src="images/tail-spin.svg"></li>
+								<li><button id="startTrial" class="button large" hx-get="/api/getGoodNightMessage" hx-trigger="click" hx-target="#gnResult" hx-indicator="#indicator">Start Trial</li>
+								<li><img id="indicator" class="htmx-indicator" src="images/tail-spin.svg"></li>
 								<li id="gnResult"></li>
 							</ul>
 							<p></p>
