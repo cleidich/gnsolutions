@@ -11,4 +11,7 @@ __queuestorage__
 __azurite_db*__.json
 
 # Python cache
-*/__pycache__/
+__pycache__/
+
+# Python virtual environment
+.venv/

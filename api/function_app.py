@@ -1,28 +1,24 @@
-import os
-import json
+import azure.functions as func
 import logging
 import requests
-from flask import Flask, request, jsonify
 
 # Initialize logging
 logging.basicConfig(
     level=logging.INFO,
     format='%(asctime)s - %(levelname)s - %(message)s'
 )
+app = func.FunctionApp(http_auth_level=func.AuthLevel.ANONYMOUS)
 
-app = Flask(__name__)
+@app.route(route="getGoodNightMessage")
+def get_gn_msg(req: func.HttpRequest) -> func.HttpResponse:
+    logging.info('Processing a Good Night message request.')
 
-@app.route('/', methods=['GET','POST'])
-def generate_message():
-    """
-    Endpoint to generate a message using OpenAI's GPT-4 API.
-    """
     try:
         # Retrieve the OpenAI API key from environment variables
         openai_api_key = os.getenv('OPENAI_API_KEY')
         if not openai_api_key:
-            return jsonify({"error": "API key is missing"}), 500
-
+            return func.HttpResponse("API key is missing", status_code=500)
+        
         # Define the API URL and headers
         api_url = "https://api.openai.com/v1/chat/completions"
         headers = {
@@ -52,13 +48,11 @@ def generate_message():
         if response.status_code == 200:
             response_data = response.json()
             message = response_data['choices'][0]['message']['content']
-            return message, 200
+            return func.HttpResponse(message, status_code=200, mimetype='text/plain')
         else:
-            return jsonify({"error": f"API request failed with status {response.status_code}: {response.text}"}), response.status_code
+            error_message = f"API request failed with status {response.status_code}: {response.text}"
+            return func.HttpResponse(error_message, status_code=response.status_code, mimetype='text/plain')
 
     except Exception as e:
         logging.error("An error occurred:", exc_info=True)
-        return jsonify({"error": f"An unexpected error occurred: {str(e)}"}), 500
-
-if __name__ == '__main__':
-    app.run(debug=True, host='0.0.0.0', port=8080)
+        return func.HttpResponse(f"An unexpected error occurred: {str(e)}", status_code=500, mimetype='text/plain')
