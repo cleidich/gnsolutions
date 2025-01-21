@@ -1,6 +1,7 @@
 import azure.functions as func
 import logging
 import requests
+import os
 
 # Initialize logging
 logging.basicConfig(
